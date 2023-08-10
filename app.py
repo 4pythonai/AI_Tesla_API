@@ -2,9 +2,25 @@ from fastapi import FastAPI
 from fastapi.responses import FileResponse
 import os
 from PIL import Image
+from fastapi.middleware.cors import CORSMiddleware
 import random
 
+origins = [
+    "http://localhost",
+    "http://localhost:3000",  # Example: React development server
+]
+
+ 
+
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers
+)
 
 # Function to generate a random image
 def generate_random_image():
@@ -22,8 +38,8 @@ def generate_random_image():
 
     return image
 
-# Route to generate and serve random images
-@app.get('/img/{image_name}')
+# Route to generate and serve random images 
+@app.get('/images/{image_name}')
 def serve_image(image_name: str):
     image_path = f'images/{image_name}'
     if os.path.exists(image_path):
