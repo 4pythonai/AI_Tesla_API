@@ -3,6 +3,7 @@ from fastapi.responses import FileResponse
 import os
 from PIL import Image
 from fastapi.middleware.cors import CORSMiddleware
+from sd import sd_image
 import random
 
 origins = [
@@ -56,19 +57,8 @@ def generate_images():
         if os.path.isfile(file_path):
             os.remove(file_path)
 
-    image1 = generate_random_image()
-    image2 = generate_random_image()
-
-    image_name1 = f"random1.png"
-    image_path1 = f'images/{image_name1}'
-    image1.save(image_path1)
-
-    image_name2 = f"random2.png"
-    image_path2 = f'images/{image_name2}'
-    image2.save(image_path2)
-
+    sd_image('1','2','3','4')
     image_files = [filename for filename in os.listdir("images") if filename.endswith(".png")]
-
     return {"code":200, "message": "Stable Difussion Done.", "files": image_files}
 
 if __name__ == '__main__':
