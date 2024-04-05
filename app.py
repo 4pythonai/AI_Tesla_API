@@ -1,4 +1,5 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+
 from fastapi.responses import FileResponse
 import os
 from PIL import Image
@@ -6,10 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sd import sd_image
 import random
 
-origins = [
-    "http://localhost",
-    "http://localhost:3000",  # Example: React development server
-]
+origins = ["*"]
 
  
 
@@ -48,19 +46,27 @@ def serve_image(image_name: str):
     else:
         return "Image not found", 404
 
-# API to generate random images
-@app.get('/txt2img')
-def generate_images():
-    # Delete all files in the images folder
+
+def clearImages():
+    
     for filename in os.listdir("images"):
         file_path = os.path.join("images", filename)
         if os.path.isfile(file_path):
             os.remove(file_path)
 
-    sd_image('1','2','3','4')
-    image_files = [filename for filename in os.listdir("images") if filename.endswith(".png")]
+# API to generate random images
+@app.post('/txt2img')
+async def generate_images( request: Request):
+    data=   await request.json()
+    prompt = data["prompt"]
+    clearImages()
+    
+            
+    sd_image(prompt)
+    image_files = [f for f in os.listdir("images") if f.endswith(".png")]
     return {"code":200, "message": "Stable Difussion Done.", "files": image_files}
+    
 
 if __name__ == '__main__':
     import uvicorn
-    uvicorn.run(app, host='127.0.0.1', port=8000)
+    uvicorn.run(app, host='0.0.0.0', port=8000)
