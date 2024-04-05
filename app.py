@@ -9,7 +9,6 @@ import random
 
 origins = ["*"]
 
- 
 
 app = FastAPI()
 
@@ -20,6 +19,7 @@ app.add_middleware(
     allow_methods=["*"],  # Allow all HTTP methods
     allow_headers=["*"],  # Allow all headers
 )
+
 
 # Function to generate a random image
 def generate_random_image():
@@ -37,36 +37,38 @@ def generate_random_image():
 
     return image
 
-# Route to generate and serve random images 
-@app.get('/images/{image_name}')
+
+# Route to generate and serve random images
+@app.get("/images/{image_name}")
 def serve_image(image_name: str):
-    image_path = f'images/{image_name}'
+    image_path = f"images/{image_name}"
     if os.path.exists(image_path):
-        return FileResponse(image_path, media_type='image/png')
+        return FileResponse(image_path, media_type="image/png")
     else:
         return "Image not found", 404
 
 
 def clearImages():
-    
+
     for filename in os.listdir("images"):
         file_path = os.path.join("images", filename)
         if os.path.isfile(file_path):
             os.remove(file_path)
 
+
 # API to generate random images
-@app.post('/txt2img')
-async def generate_images( request: Request):
-    data=   await request.json()
+@app.post("/txt2img")
+async def generate_images(request: Request):
+    data = await request.json()
     prompt = data["prompt"]
     clearImages()
-    
-            
+
     sd_image(prompt)
     image_files = [f for f in os.listdir("images") if f.endswith(".png")]
-    return {"code":200, "message": "Stable Difussion Done.", "files": image_files}
-    
+    return {"code": 200, "message": "Stable Difussion Done.", "files": image_files}
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host='0.0.0.0', port=8000)
+
+    uvicorn.run(app, host="0.0.0.0", port=6789)
