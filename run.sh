@@ -1,1 +1,1 @@
-uvicorn app:app --host 0.0.0.0 --reload
+uvicorn app:app --host 0.0.0.0  --por=6789  --reload
