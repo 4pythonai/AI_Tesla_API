@@ -6,7 +6,8 @@ from PIL import Image
 
 def sd_image(prompt):
 
-    url = "http://119.255.238.247:35600"
+    ## 8 卡机器 内网 IP
+    url = "http://127.0.0.1:35600"
 
     # "prompt": "best quality, ultra-detailed, masterpiece, finely detail, highres, 8k wallpaper, (a single car of  1Tesla  model3 :1.3), solo,side view, (motion:1.5) ",
 
